@@ -239,8 +239,6 @@ public class LogicaApplication {
 
 	private static BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 
-	private static List<Aluno> alunos = new ArrayList<>();
-
 	public static void main(String[] args) throws IOException, NumberFormatException, InterruptedException {
 		while (true) {
 			limparTela();
@@ -312,7 +310,7 @@ public class LogicaApplication {
 			int opcao = Integer.parseInt(reader.readLine());
 			if (opcao == 1)
 				capturaNotasAluno(aluno);
-				return;
+			return;
 
 		} catch (Exception e) {
 			mensagem("Opcao invalida, iniciando novo cadastro de nota");
@@ -333,13 +331,13 @@ public class LogicaApplication {
 	}
 
 	private static void mostrarAlunos() throws InterruptedException {
-		if (alunos.size() == 0) {
+		if (Aluno.all().size() == 0) {
 			mensagem("Nenhum aluno cadastrado");
 			return;
 		}
 
 		System.out.println("===== [RELATORIO DE ALUNOS] =====");
-		for (Aluno aluno : alunos) {
+		for (Aluno aluno : Aluno.all()) {
 			System.out.println("Nome: " + aluno.getNome());
 			String notas = "";
 			for (Float nota : aluno.getNotas()) {
@@ -361,8 +359,8 @@ public class LogicaApplication {
 
 		capturaNotasAluno(aluno);
 
-		alunos.add(aluno);
-		
+		aluno.salvar();
+
 		mensagem("Aluno cadastrado com sucesso!");
 	}
 

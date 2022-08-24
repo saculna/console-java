@@ -1,8 +1,22 @@
 package models;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 
 public class Aluno {
+  private static List<Aluno> alunos = new ArrayList<>();
+
   private String nome;
 
   public String getNome() {
@@ -46,5 +60,43 @@ public class Aluno {
     }
 
     return mediaCalculada;
+  }
+
+  public void salvar() {
+    Aluno.alunos.add(this);
+    try {
+      FileWriter myWriter = new FileWriter("alunos.json");
+      String alunosJson = new Gson().toJson(Aluno.alunos);
+      myWriter.write(alunosJson);
+      myWriter.close();
+    } catch (IOException e) {
+    }
+  }
+
+  public static List<Aluno> all() {
+    if (Aluno.alunos == null || Aluno.alunos.size() == 0) {
+      try {
+        File myObj = new File("alunos.json");
+        Scanner myReader = new Scanner(myObj);
+        String alunosJson = "";
+        while (myReader.hasNextLine()) {
+          alunosJson += myReader.nextLine();
+        }
+        myReader.close();
+
+        Aluno.alunos = new Gson().fromJson(alunosJson, new TypeToken<List<Aluno>>(){}.getType());
+
+      } catch (FileNotFoundException e) {
+        System.out.println("An error occurred.");
+        e.printStackTrace();
+      }
+    }
+
+    return Aluno.alunos;
+  }
+
+  @Override
+  public String toString() {
+    return this.nome;
   }
 }
